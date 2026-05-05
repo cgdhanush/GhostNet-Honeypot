@@ -1,8 +1,8 @@
 """
-__main__.py for Honeypot
-To launch Honeypot as a module
+__main__.py for GhostNet
+To launch GhostNet as a module
 
-> python -m honeypot (with Python >= 3.11)
+> python -m ghostnet (with Python >= 3.11)
 """
 
 
@@ -35,17 +35,17 @@ def run(sysargv: list[str] | None = None) -> None:
         # Call subcommand.
         if args.get("version") or args.get("version_main"):
             """
-            Print version information for honeypot and its key dependencies.
+            Print version information for GhostNet and its key dependencies.
             """
             print(f"Operating System:\t{platform.platform()}")
             print(f"Python Version:\t\tPython {sys.version.split(' ')[0]}")
             print()
-            print(f"honeypot Version:\thoneypot {__version__}")
+            print(f"GhostNet Version:\tGhostNet {__version__}")
 
             return_code = 0
 
         elif "func" in args:
-            logger.info(f"honeypot {__version__}")
+            logger.info(f"GhostNet {__version__}")
             return_code = args["func"](args)
         
     except SystemExit as e:  # pragma: no cover
