@@ -13,7 +13,7 @@ from typing import Any
 
 from ghostnet import __version__
 from ghostnet.commands.arguments import Arguments
-from ghostnet.loggers import setup_logging_pre
+from ghostnet.loggers import setup_logging_pre, setup_logging
 
 
 logger = logging.getLogger(__name__)
@@ -28,6 +28,7 @@ def run(sysargv: list[str] | None = None) -> None:
     return_code: Any = 1
     try:
         setup_logging_pre()
+        setup_logging()
         arguments = Arguments(sysargv)
         args = arguments.get_parsed_arg()
 
