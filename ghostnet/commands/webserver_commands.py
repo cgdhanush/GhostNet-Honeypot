@@ -7,5 +7,6 @@ def start_webserver(args: dict[str, Any]) -> None:
     """
     Main entry point for webserver mode
     """
-    logger.info("Starting webserver mode...")
-    logger.info("Webserver mode is not yet implemented.")
+    from ghostnet.ghostnet import GhostNet
+    ghostnet = GhostNet()
+    ghostnet.start_ssh_honeypot()
