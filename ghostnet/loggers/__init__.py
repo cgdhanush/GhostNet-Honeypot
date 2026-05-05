@@ -4,10 +4,10 @@ from logging import Formatter
 from pathlib import Path
 from typing import Any
 
-from honeypot.config import CONFIG
-from honeypot.loggers.buffering_handler import FTBufferingHandler
-from honeypot.loggers.ft_rich_handler import FtRichHandler
-from honeypot.loggers.rich_console import get_rich_console
+from ghostnet.config import CONFIG
+from ghostnet.loggers.buffering_handler import FTBufferingHandler
+from ghostnet.loggers.ft_rich_handler import FtRichHandler
+from ghostnet.loggers.rich_console import get_rich_console
 
 
 logger = logging.getLogger(__name__)

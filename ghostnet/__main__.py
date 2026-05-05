@@ -11,9 +11,9 @@ import platform
 import sys
 from typing import Any
 
-from honeypot import __version__
-from honeypot.commands.arguments import Arguments
-from honeypot.loggers import setup_logging_pre
+from ghostnet import __version__
+from ghostnet.commands.arguments import Arguments
+from ghostnet.loggers import setup_logging_pre
 
 
 logger = logging.getLogger(__name__)

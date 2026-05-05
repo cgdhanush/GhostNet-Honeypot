@@ -5,7 +5,7 @@ This module contains the argument manager class
 from argparse import ArgumentParser, Namespace, _ArgumentGroup
 from typing import Any
 
-from honeypot.commands.cli_options import AVAILABLE_CLI_OPTIONS
+from ghostnet.commands.cli_options import AVAILABLE_CLI_OPTIONS
 
 
 ARGS_MAIN = ["version"]
@@ -66,7 +66,7 @@ class Arguments:
         )
         self._build_args(optionlist=ARGS_COMMON, parser=self.parser)
 
-        from honeypot.commands import start_webserver
+        from ghostnet.commands import start_webserver
 
         subparsers = self.parser.add_subparsers(
             dest="command",
