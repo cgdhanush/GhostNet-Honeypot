@@ -48,9 +48,12 @@ class GhostNet:
             return
 
         from backend.app.app import start_app
-        start_app(CONFIG)
+        start_app(CONFIG,standalone=True)
     
     def start(self):
-        self.start_api_server()
+        from backend.app.app import start_app
+        
+        start_app(CONFIG)
         self.start_ssh_honeypot()
+
 

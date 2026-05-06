@@ -30,6 +30,7 @@ async def api_get_logs(
     ip: str | None = None,
     limit: int | None = None,
     db: AsyncIOMotorDatabase = Depends(get_data_db),
+    _: dict = Depends(get_current_user),
 ) -> list[SSHLog]:
     docs = await get_logs(db, event_type=event_type, ip=ip, limit=limit)
 
@@ -40,6 +41,7 @@ async def api_get_logs(
 
 @app_router.get("/sessions", response_model=list[Session])
 async def api_get_sessions(
+    _: dict = Depends(get_current_user),
     db: AsyncIOMotorDatabase = Depends(get_data_db),
 ) -> list[Session]:
     docs = await get_sessions(db)
@@ -58,6 +60,7 @@ async def api_get_sessions(
 async def api_get_session_detail(
     conn_id: str,
     db: AsyncIOMotorDatabase = Depends(get_data_db),
+    _: dict = Depends(get_current_user),
 ) -> Session:
     session = await get_session_detail(db, conn_id)
     if not session:
@@ -71,5 +74,6 @@ async def api_get_session_detail(
 @app_router.get("/stats", response_model=Stats)
 async def api_get_stats(
     db: AsyncIOMotorDatabase = Depends(get_data_db),
+    _: dict = Depends(get_current_user),
 ) -> Stats:
     return await get_stats(db)

@@ -43,38 +43,52 @@ def create_app() -> FastAPI:
 app = create_app()
 
 
-def start_app(config: dict):
+def start_app(config: dict, standalone: bool = False):
     """
     Start API ... should be run in thread.
     """
-    rest_ip = config.get("api_server", {}).get("listen_ip_address") or "localhost"
+
+    rest_ip = config.get("api_server", {}).get("listen_ip_address") or "127.0.0.1"
     rest_port = config.get("api_server", {}).get("listen_port") or 8000
 
-    logger.info(f"Starting HTTP Server at {rest_ip}:{rest_port}")
+    logger.info(f"Starting HTTP Server at http://{rest_ip}:{rest_port}")
+
     if not ip_address(rest_ip).is_loopback:
         logger.warning(
             "SECURITY WARNING - Local Rest Server listening to external connections"
         )
         logger.warning(
-            "SECURITY WARNING - This is insecure please set to your loopback,"
-            "e.g 127.0.0.1 in config.json"
+            "SECURITY WARNING - This is insecure, use 127.0.0.1 in config.json"
         )
 
-    logger.info("Starting Local Rest Server.")
-    verbosity = config["api_server"].get("verbosity", "error")
+    verbosity = config.get("api_server", {}).get("verbosity", "error")
 
     uvconfig = uvicorn.Config(
         app,
-        port=rest_port,
         host=rest_ip,
+        port=rest_port,
+        log_level=verbosity,
         use_colors=False,
-        log_config=None,
-        access_log=True if verbosity != "error" else False,
-        ws_ping_interval=None,  # We do this explicitly ourselves
+        access_log=(verbosity != "error"),
+        ws_ping_interval=None,
     )
 
     try:
         server = UvicornServer(uvconfig)
-        server.run_in_thread()
+
+        if standalone:
+            uvicorn.run(
+                app,
+                host=rest_ip,
+                port=rest_port,
+            )
+            logger.info("Uvicorn started in standalone mode")
+            return None, None
+        else:
+            thread = server.run_in_thread()
+            logger.info("Uvicorn started in thread: FTUvicorn")
+            return server, thread
+
     except Exception:
-        logger.exception("Api server failed to start.")
+        logger.exception("API server failed to start")
+        raise
