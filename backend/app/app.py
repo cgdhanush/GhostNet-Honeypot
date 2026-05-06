@@ -58,7 +58,7 @@ def start_app(config: dict, standalone: bool = False):
             "SECURITY WARNING - Local Rest Server listening to external connections"
         )
         logger.warning(
-            "SECURITY WARNING - This is insecure, use 127.0.0.1 in config.json"
+            "SECURITY WARNING - This is insecure, use 127.0.0.1 in config"
         )
 
     verbosity = config.get("api_server", {}).get("verbosity", "error")
