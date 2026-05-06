@@ -10,7 +10,10 @@ class Settings(BaseSettings):
     )
 
     APP_NAME: str = "Honeyfot System"
-    BACKEND_CORS_ORIGINS: List[str] = ["http://localhost:3000"]
+    BACKEND_CORS_ORIGINS: List[str] = [
+        "http://127.0.0.1:3000",
+        "http://localhost:3000",
+    ]
 
     MONGODB_URI: str = "mongodb://admin:admin1234@127.0.0.1:27017/?authSource=admin"
     MONGODB_DB: str = "honeyfot"
@@ -20,7 +23,6 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
     JWT_ALGORITHM: str = "HS256"
-
 
 
 settings = Settings()

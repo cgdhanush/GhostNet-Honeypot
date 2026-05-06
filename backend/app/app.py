@@ -14,7 +14,8 @@ from backend.app.web_ui import router_ui
 
 logger = logging.getLogger(__name__)
 
-def create_app(config:dict = {}) -> FastAPI:
+
+def create_app() -> FastAPI:
     app = FastAPI(
         title=settings.APP_NAME,
         version="1.0.0",
@@ -22,13 +23,6 @@ def create_app(config:dict = {}) -> FastAPI:
         redoc_url="/redoc",
     )
 
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=settings.BACKEND_CORS_ORIGINS,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
     app.include_router(public_router, prefix="/api/v1", tags=["public"])
 
     app.include_router(auth_router, prefix="/api/v1/auth", tags=["auth"])
@@ -37,13 +31,14 @@ def create_app(config:dict = {}) -> FastAPI:
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=config.get("api_server", {}).get("CORS_origins", []),
+        allow_origins=settings.BACKEND_CORS_ORIGINS,
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
 
     return app
+
 
 app = create_app()
 
@@ -57,7 +52,9 @@ def start_app(config: dict):
 
     logger.info(f"Starting HTTP Server at {rest_ip}:{rest_port}")
     if not ip_address(rest_ip).is_loopback:
-        logger.warning("SECURITY WARNING - Local Rest Server listening to external connections")
+        logger.warning(
+            "SECURITY WARNING - Local Rest Server listening to external connections"
+        )
         logger.warning(
             "SECURITY WARNING - This is insecure please set to your loopback,"
             "e.g 127.0.0.1 in config.json"
@@ -81,4 +78,3 @@ def start_app(config: dict):
         server.run_in_thread()
     except Exception:
         logger.exception("Api server failed to start.")
-
