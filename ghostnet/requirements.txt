@@ -2,3 +2,4 @@ twisted
 cryptography
 cachetools
 sqlalchemy
+python-json-logger
