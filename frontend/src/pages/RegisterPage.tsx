@@ -28,7 +28,7 @@ export function RegisterPage() {
     setLoading(true);
 
     try {
-      await register({ username, password, email });
+      await register({ username, email, password });
       navigate("/");
     } catch (err) {
       setError(
@@ -87,6 +87,7 @@ export function RegisterPage() {
               onChange={(event) => setEmail(event.target.value)}
               InputLabelProps={{ sx: { color: "#adb5bd" } }}
               InputProps={{ sx: { color: "#e9ecef" } }}
+              required
             />
             <TextField
               margin="normal"

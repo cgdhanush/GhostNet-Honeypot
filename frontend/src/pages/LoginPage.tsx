@@ -14,7 +14,7 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 
 export function LoginPage() {
-  const [username, setUsername] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -27,7 +27,7 @@ export function LoginPage() {
     setLoading(true);
 
     try {
-      await login({ username, password });
+      await login({ identifier, password });
       navigate("/");
     } catch (err) {
       setError(
@@ -68,10 +68,10 @@ export function LoginPage() {
             <TextField
               margin="normal"
               fullWidth
-              label="Username"
+              label="Email or Username"
               variant="outlined"
-              value={username}
-              onChange={(event) => setUsername(event.target.value)}
+              value={identifier}
+              onChange={(event) => setIdentifier(event.target.value)}
               InputLabelProps={{ sx: { color: "#adb5bd" } }}
               InputProps={{ sx: { color: "#e9ecef" } }}
               required
