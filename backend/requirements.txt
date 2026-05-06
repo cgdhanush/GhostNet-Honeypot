@@ -1,3 +1,8 @@
-fastapi 
-uvicorn[standard] 
+fastapi
+uvicorn[standard]
 python-dotenv
+motor
+passlib[bcrypt]
+python-jose[cryptography]
+pydantic-settings
+pydantic[email]
