@@ -14,6 +14,7 @@ class Settings(BaseSettings):
 
     MONGODB_URI: str = "mongodb://admin:admin1234@127.0.0.1:27017/?authSource=admin"
     MONGODB_DB: str = "honeyfot"
+    MONGODB_EVENT_DB: str = "ssh_logs"
 
     SECRET_KEY: str = "00aabbccddeeff00112233445566778899aabbccd899"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30

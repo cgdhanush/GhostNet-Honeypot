@@ -7,7 +7,7 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from fastapi import APIRouter, Depends, status
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
-from backend.app.session import get_db
+from backend.app.session import get_user_db
 
 from backend.app.schemas import AuthLogin, AuthRegister, TokenRefreshRequest
 from backend.app.schemas import Token
@@ -84,7 +84,7 @@ def refresh_access_token(refresh_token: str) -> dict[str, str]:
 @router.post("/register", response_model=Token, status_code=status.HTTP_201_CREATED)
 async def register(
     payload: AuthRegister,
-    db: AsyncIOMotorDatabase = Depends(get_db),
+    db: AsyncIOMotorDatabase = Depends(get_user_db),
 ) -> dict[str, str]:
     user = await register_user(db, payload)
     return {**create_tokens_for_user(user), "token_type": "bearer"}
@@ -93,7 +93,7 @@ async def register(
 @router.post("/login", response_model=Token)
 async def login(
     payload: AuthLogin,
-    db: AsyncIOMotorDatabase = Depends(get_db),
+    db: AsyncIOMotorDatabase = Depends(get_user_db),
 ) -> dict[str, str]:
     user = await authenticate_user(db, payload.identifier, payload.password)
     return {**create_tokens_for_user(user), "token_type": "bearer"}

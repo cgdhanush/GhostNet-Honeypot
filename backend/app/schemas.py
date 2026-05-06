@@ -1,6 +1,7 @@
 from datetime import datetime
 from enum import Enum
-from pydantic import BaseModel, EmailStr, Field
+from bson import ObjectId
+from pydantic import BaseModel, EmailStr, Field, field_serializer
 
 
 # ---------- AUTH INPUT MODELS ----------
@@ -68,8 +69,9 @@ class EventType(str, Enum):
     KEXINIT = "KEXINIT"
     USERAUTH_REQUEST = "USERAUTH_REQUEST"
 
-
 class SSHLog(BaseModel):
+    id: str | None = None  # map _id → id
+
     EVENT: EventType
     SRC_HOST: str
     SRC_PORT: int
@@ -85,9 +87,11 @@ class SSHLog(BaseModel):
     KEY_TYPE: str | None = None
     COMMAND: str | None = None
 
-    model_config = {
-        "extra": "allow",
-    }
+    model_config = {"extra": "allow"}
+
+    @field_serializer("id")
+    def serialize_id(self, v):
+        return str(v) if isinstance(v, ObjectId) else v
 
 
 class Session(BaseModel):

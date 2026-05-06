@@ -12,16 +12,19 @@ from backend.app.config.config import settings
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
 client = AsyncIOMotorClient(settings.MONGODB_URI)
-db: AsyncIOMotorDatabase = client[settings.MONGODB_DB]
+user_db: AsyncIOMotorDatabase = client[settings.MONGODB_DB]
+data_db: AsyncIOMotorDatabase = client[settings.MONGODB_EVENT_DB]
 
 
-async def get_db():
-    yield db
+async def get_user_db():
+    yield user_db
 
+async def get_data_db():
+    yield data_db
 
 async def get_current_user(
     token: str = Depends(oauth2_scheme),
-    db: AsyncIOMotorDatabase = Depends(get_db),
+    db: AsyncIOMotorDatabase = Depends(get_user_db),
 ) -> dict[str, Any]:
     try:
         payload = decode_token(token)

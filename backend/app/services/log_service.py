@@ -22,7 +22,7 @@ async def get_logs(
             {"DST_HOST": {"$regex": ip, "$options": "i"}},
         ]
 
-    cursor = db.logs.find(query).sort("timestamp", -1)
+    cursor = db.events.find(query).sort("timestamp", -1)
     length = limit if limit is not None else 100
     return await cursor.to_list(length=length)
 
@@ -47,7 +47,7 @@ async def get_sessions(
             }
         }
     ]
-    cursor = db.logs.aggregate(pipeline)
+    cursor = db.events.aggregate(pipeline)
     return await cursor.to_list(length=1000)
 
 
@@ -55,7 +55,7 @@ async def get_session_detail(
     db: AsyncIOMotorDatabase,
     conn_id: str,
 ) -> List[dict[str, Any]]:
-    cursor = db.logs.find({"CONN_ID": conn_id}).sort("timestamp", 1)
+    cursor = db.events.find({"CONN_ID": conn_id}).sort("timestamp", 1)
     return await cursor.to_list(length=1000)
 
 
@@ -70,16 +70,16 @@ async def get_stats(
         "USERAUTH_REQUEST",
     ]
 
-    total_connections = await db.logs.distinct("CONN_ID")
-    unique_ips = await db.logs.distinct("SRC_HOST")
+    total_connections = await db.events.distinct("CONN_ID")
+    unique_ips = await db.events.distinct("SRC_HOST")
     event_type_counts: dict[str, int] = {}
 
     for event_type in event_types:
-        event_type_counts[event_type] = await db.logs.count_documents(
+        event_type_counts[event_type] = await db.events.count_documents(
             {"EVENT": event_type}
         )
 
-    auth_attempts = await db.logs.count_documents({"EVENT": "USERAUTH_REQUEST"})
+    auth_attempts = await db.events.count_documents({"EVENT": "USERAUTH_REQUEST"})
 
     return {
         "total_connections": len(total_connections),
