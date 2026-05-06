@@ -51,7 +51,7 @@ mongosh "mongodb://localhost:27017"
 If not running:
 
 ```bash
-docker compose -f database/docker-compose.yaml up -d
+docker compose -f docker/mongo-docker-compose.yaml up -d
 ```
 
 ---
