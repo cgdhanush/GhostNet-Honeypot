@@ -3,3 +3,4 @@ cryptography
 cachetools
 sqlalchemy
 python-json-logger
+python-dotenv
