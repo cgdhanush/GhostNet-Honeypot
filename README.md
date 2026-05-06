@@ -26,12 +26,10 @@ GhostNet needs Python, MongoDB, and SSH service active.
 ## 📸 Demo Screenshots
 
 <p align="center">
-  <img src="" width="250"/>
   <img src="assets/image02.png" width="250"/>
   <img src="assets/image03.png" width="250"/>
 </p>
 <p align="center">
-  <img src="" width="250"/>
   <img src="assets/image05.png" width="250"/>
 </p>
 <p align="center">
