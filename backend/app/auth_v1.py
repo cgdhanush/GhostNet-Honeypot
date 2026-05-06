@@ -95,7 +95,7 @@ async def login(
     payload: AuthLogin,
     db: AsyncIOMotorDatabase = Depends(get_db),
 ) -> dict[str, str]:
-    user = await authenticate_user(db, payload.email, payload.password)
+    user = await authenticate_user(db, payload.identifier, payload.password)
     return {**create_tokens_for_user(user), "token_type": "bearer"}
 
 

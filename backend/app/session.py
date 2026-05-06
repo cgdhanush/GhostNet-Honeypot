@@ -3,7 +3,6 @@ from typing import Any
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError
-from motor.motor_asyncio import AsyncIOMotorDatabase
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 
 from backend.app.config.security import decode_token
