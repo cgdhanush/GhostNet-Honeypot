@@ -42,12 +42,17 @@ async def api_get_logs(
 async def api_get_sessions(
     db: AsyncIOMotorDatabase = Depends(get_data_db),
 ) -> list[Session]:
-    docs =  await get_sessions(db)
+    docs = await get_sessions(db)
+
     for doc in docs:
-        doc["_id"] = str(doc["_id"])  # convert ObjectId → str
+        # map _id → id
+        doc["id"] = str(doc.pop("_id"))
 
-    return docs
+        # fix nested ObjectIds
+        for event in doc.get("events", []):
+            event.pop("_id", None)
 
+    return docs 
 
 @app_router.get("/sessions/{conn_id}", response_model=Session)
 async def api_get_session_detail(

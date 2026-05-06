@@ -38,8 +38,8 @@ class UserBase(BaseModel):
     email: EmailStr
 
 
-class UserCreate(UserBase):    
-    username: str = Field(..., min_length=3, max_length=64)    
+class UserCreate(UserBase):
+    username: str = Field(..., min_length=3, max_length=64)
     password: str  # raw password only for creation layer
 
 
@@ -69,6 +69,7 @@ class EventType(str, Enum):
     KEXINIT = "KEXINIT"
     USERAUTH_REQUEST = "USERAUTH_REQUEST"
 
+
 class SSHLog(BaseModel):
     id: str | None = None  # map _id → id
 
@@ -93,8 +94,9 @@ class SSHLog(BaseModel):
     def serialize_id(self, v):
         return str(v) if isinstance(v, ObjectId) else v
 
-
 class Session(BaseModel):
+    id: str | None = None  # map _id → id
+
     CONN_ID: str
     SRC_HOST: str
     SRC_PORT: int
@@ -106,9 +108,11 @@ class Session(BaseModel):
     last_event_type: EventType
     events: list[SSHLog]
 
-    model_config = {
-        "extra": "allow",
-    }
+    model_config = {"extra": "allow",}
+
+    @field_serializer("id")
+    def serialize_id(self, v):
+        return str(v) if isinstance(v, ObjectId) else v
 
 
 class Stats(BaseModel):
