@@ -57,12 +57,5 @@ AVAILABLE_CLI_OPTIONS = {
         "redirecting output to a file.",
         action="store_false",
         default=True,
-    ),
-     "logfile": Arg(
-        "--logfile",
-        "--log-file",
-        help="Log to the file specified. Special values are: 'syslog', 'journald'. "
-        "See the documentation for more details.",
-        metavar="FILE",
-    ),
+    )
 }

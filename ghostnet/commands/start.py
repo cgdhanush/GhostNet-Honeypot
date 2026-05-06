@@ -3,10 +3,10 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
-def start_webserver(args: dict[str, Any]) -> None:
+def start_main(args: dict[str, Any]) -> None:
     """
-    Main entry point for webserver mode
+    Main entry point for GhostNet 
     """
     from ghostnet.ghostnet import GhostNet
     ghostnet = GhostNet()
-    ghostnet.start_api_server()
+    ghostnet.start()

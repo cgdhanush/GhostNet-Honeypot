@@ -13,11 +13,12 @@ ARGS_MAIN = ["version"]
 ARGS_COMMON = [
     "verbosity",
     "print_colorized",
-    "logfile",
     "version",
 ]
 
 ARGS_WEBSERVER: list[str] = []
+ARGS_SSHSERVER: list[str] = []
+ARGS_START: list[str] = []
 
 
 class Arguments:
@@ -67,7 +68,10 @@ class Arguments:
         self._build_args(optionlist=ARGS_COMMON, parser=self.parser)
 
         from ghostnet.commands import start_webserver
+        from ghostnet.commands import start_sshserver
+        from ghostnet.commands import start_main
 
+        
         subparsers = self.parser.add_subparsers(
             dest="command",
         )
@@ -79,3 +83,19 @@ class Arguments:
         )
         webserver_cmd.set_defaults(func=start_webserver)
         self._build_args(optionlist=ARGS_WEBSERVER, parser=webserver_cmd)
+
+        # Add SSH server subcommand
+        sshserver_cmd = subparsers.add_parser(
+            "sshserver",
+            help="SSH server module.",
+        )
+        sshserver_cmd.set_defaults(func=start_sshserver)
+        self._build_args(optionlist=ARGS_SSHSERVER, parser=sshserver_cmd)
+
+        # Add main command
+        main_cmd = subparsers.add_parser(
+            "start",
+            help="Main module.",
+        )
+        main_cmd.set_defaults(func=start_main)
+        self._build_args(optionlist=ARGS_START, parser=main_cmd)

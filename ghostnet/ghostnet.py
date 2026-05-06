@@ -42,5 +42,15 @@ class GhostNet:
 
         reactor.run()
 
+    def start_api_server(self):
+        if not CONFIG["enable_api_server"]:
+            logger.info("API server is disabled in configuration.")
+            return
 
+        from backend.app.app import start_app
+        start_app(CONFIG)
+    
+    def start(self):
+        self.start_api_server()
+        self.start_ssh_honeypot()
 
