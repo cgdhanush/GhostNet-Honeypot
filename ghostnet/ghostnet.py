@@ -1,8 +1,9 @@
 import logging
 
 from twisted.internet import reactor, endpoints
-from twisted.cred import portal, credentials, error
+from twisted.cred import portal
 
+from ghostnet.config import CONFIG
 from ghostnet.data.manager import Manager
 from ghostnet.data.handler import MongoHandler
 
@@ -28,14 +29,15 @@ class GhostNet:
         
         log = logging.getLogger("ssh")
         log.addHandler(MongoHandler(collection))
-
-        ssh_factory = SimpleSSHFactory("SSH-2.0-OpenSSH_7.4")
+        
+        ssh_config = CONFIG["ssh_config"]
+        ssh_factory = SimpleSSHFactory(ssh_config["version"])
         ssh_realm = SimpleSSHRealm()
         ssh_portal = portal.Portal(ssh_realm)
         ssh_portal.registerChecker(LoggingPasswordChecker())
         ssh_factory.portal = ssh_portal
 
-        endpoint = endpoints.TCP4ServerEndpoint(reactor, 2222, interface="0.0.0.0")
+        endpoint = endpoints.TCP4ServerEndpoint(reactor, ssh_config["port"], interface=ssh_config["hostname"])
         endpoint.listen(ssh_factory)
 
         reactor.run()
