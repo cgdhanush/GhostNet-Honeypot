@@ -63,7 +63,7 @@ class Arguments:
         # Build shared arguments (as group Common Options)
         # Build main command
         self.parser = ArgumentParser(
-            prog="honeypot", description="Honeypot-Based Attack Monitoring System"
+            prog="ghostnet", description="Honeypot-Based Attack Monitoring System"
         )
         self._build_args(optionlist=ARGS_COMMON, parser=self.parser)
 

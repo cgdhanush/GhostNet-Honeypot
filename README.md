@@ -23,6 +23,21 @@ GhostNet is a lightweight honeypot framework designed to lure, monitor, and log 
 GhostNet needs Python, MongoDB, and SSH service active.
 
 ---
+## 📸 Demo Screenshots
+
+<p align="center">
+  <img src="" width="250"/>
+  <img src="assets/image02.png" width="250"/>
+  <img src="assets/image03.png" width="250"/>
+</p>
+<p align="center">
+  <img src="" width="250"/>
+  <img src="assets/image05.png" width="250"/>
+</p>
+<p align="center">
+  <img src="assets/image01.png" width="250"/>
+  <img src="assets/image04.png" width="250"/>
+</p>
 
 ## 🐍 Python
 
@@ -72,19 +87,11 @@ sudo systemctl start ssh
 
 > Used for monitoring or honeypot simulation of SSH attacks.
 
----
-
-## 🐳 Run Full Stack
-
-```bash
-docker compose -f database/docker-compose.yaml up -d
-```
 
 ---
 
 > GhostNet runs only when Python, MongoDB, and SSH are alive.
 
-```
 
 ## 🚀 Installation
 
@@ -104,20 +111,58 @@ pip install -r ghostnet/requirnemts.txt
 
 ---
 
+
+## 📌 CLI Usage
+
+```bash
+usage: ghostnet [-h] [-v] [--no-color] [-V] {webserver,sshserver,start} ...
+
+Honeypot-Based Attack Monitoring System
+
+positional arguments:
+  {webserver,sshserver,start}
+    webserver           Webserver module
+    sshserver           SSH server module
+    start               Main module
+
+options:
+  -h, --help            show this help message and exit
+  -v, --verbose         Verbose mode (-vv, -vvv for more details)
+  --no-color            Disable colored output (useful for logs/files)
+  -V, --version         show program version and exit
+```
+
+---
+
 ## 🧪 Running GhostNet
 
-### Start Web Server
+### ▶ Start Web Server
 
 ```bash
 python -m ghostnet webserver
 ```
 
-### Need help?
+### ▶ Start SSH Server
+
+```bash
+python -m ghostnet sshserver
+```
+
+### ▶ Run Main Module
+
+```bash
+python -m ghostnet start
+```
+
+---
+
+## ❓ Need Help?
 
 ```bash
 python -m ghostnet --help
 ```
 
+---
 
 ## 🧠 Philosophy
 
