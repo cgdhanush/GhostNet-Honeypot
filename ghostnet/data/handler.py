@@ -15,12 +15,16 @@ class MongoHandler(logging.Handler):
         try:
             doc = record.__dict__.get("extra", {})
             doc["level"] = record.levelname
-            doc["timestamp"] = datetime.fromtimestamp(record.created).isoformat()
+            doc["timestamp"] = datetime.now().isoformat()
 
-            message = record.getMessage()
-            for key, item in message:
-                doc[key] = item
+            message = record.msg
+
+            if isinstance(message, dict):
+                for key, value in message.items():
+                    doc[key] = value
+            else:
+                doc["message"] = record.getMessage()
 
             self.collection.insert_one(doc)
-        except Exception:
-            pass
+        except Exception as e:
+           logger.error("MongoHandler error:", e, exc_info=True)
