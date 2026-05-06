@@ -5,22 +5,16 @@ import binascii
 import hashlib
 import random
 from warnings import filterwarnings
-
 filterwarnings("ignore")
 
-from twisted.internet import reactor, endpoints, defer
+from twisted.internet import defer
 from twisted.conch.ssh import factory, keys, userauth, connection, transport
 from twisted.conch import avatar, interfaces as conchinterfaces
 from twisted.cred import portal, credentials, error
-from twisted.internet.threads import deferToThread
-from twisted.python import log
+
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa, ec
-from twisted.logger import ILogObserver
-from twisted.logger import globalLogPublisher
-
-from ghostnet.data.manager import Database
 
 try:
     from cryptography.hazmat.primitives.asymmetric import ed25519
@@ -29,9 +23,9 @@ except Exception:
 
 from zope.interface import implementer
 
-script_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "keys")
+KEY_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "keys")
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("ssh")
 
 def _b2s(x):
     if x is None:
@@ -94,11 +88,13 @@ def _ssh_fp_sha256_from_blob(key_blob):
 
 
 def getRSAKeys():
-    public_key_path = os.path.join(script_dir, "id_rsa.pub")
-    private_key_path = os.path.join(script_dir, "id_rsa")
+    public_key_path = os.path.join(KEY_DIR, "id_rsa.pub")
+    private_key_path = os.path.join(KEY_DIR, "id_rsa")
 
     if not (os.path.exists(public_key_path) and os.path.exists(private_key_path)):
-        ssh_key = rsa.generate_private_key(public_exponent=65537, key_size=2048, backend=default_backend())
+        ssh_key = rsa.generate_private_key(
+            public_exponent=65537, key_size=2048, backend=default_backend()
+        )
 
         public_key = ssh_key.public_key().public_bytes(
             serialization.Encoding.OpenSSH, serialization.PublicFormat.OpenSSH
@@ -177,7 +173,7 @@ def getHostKeyDicts():
 
     try:
         ecdsa_pub, ecdsa_priv = _load_or_create_hostkey(
-            os.path.join(script_dir, "ssh_host_ecdsa_key"),
+            os.path.join(KEY_DIR, "ssh_host_ecdsa_key"),
             lambda: ec.generate_private_key(ec.SECP256R1()),
         )
         publicKeys[b"ecdsa-sha2-nistp256"] = keys.Key.fromString(data=ecdsa_pub)
@@ -188,7 +184,7 @@ def getHostKeyDicts():
     if ed25519 is not None:
         try:
             ed_pub, ed_priv = _load_or_create_hostkey(
-                os.path.join(script_dir, "ssh_host_ed25519_key"),
+                os.path.join(KEY_DIR, "ssh_host_ed25519_key"),
                 lambda: ed25519.Ed25519PrivateKey.generate(),
             )
             try:
@@ -241,8 +237,12 @@ class CustomSSHUserAuthServer(userauth.SSHUserAuthServer):
                     "SRC_PORT": getattr(peer, "port", ""),
                     "DST_HOST": getattr(us, "host", ""),
                     "DST_PORT": getattr(us, "port", ""),
-                    "LOCALVERSION": _b2s(getattr(self.transport, "ourVersionString", b"")),
-                    "REMOTEVERSION": _b2s(getattr(self.transport, "otherVersionString", b"")),
+                    "LOCALVERSION": _b2s(
+                        getattr(self.transport, "ourVersionString", b"")
+                    ),
+                    "REMOTEVERSION": _b2s(
+                        getattr(self.transport, "otherVersionString", b"")
+                    ),
                     "CONN_ID": getattr(self.transport, "_conn_id", ""),
                 }
 
@@ -268,7 +268,7 @@ class CustomSSHUserAuthServer(userauth.SSHUserAuthServer):
                         }
                     )
 
-                log.msg(out)
+                logger.info(out)
         except Exception:
             pass
 
@@ -289,7 +289,7 @@ class CustomSSHServerTransport(transport.SSHServerTransport):
         try:
             peer = self.transport.getPeer()
             us = self.transport.getHost()
-            log.msg(
+            logger.info(
                 {
                     "EVENT": "NEW_CONNECTION",
                     "SRC_HOST": getattr(peer, "host", ""),
@@ -317,7 +317,7 @@ class CustomSSHServerTransport(transport.SSHServerTransport):
                 self._ver_logged = True
                 peer = self.transport.getPeer()
                 us = self.transport.getHost()
-                log.msg(
+                logger.info(
                     {
                         "EVENT": "VERSION_EXCHANGE",
                         "SRC_HOST": getattr(peer, "host", ""),
@@ -345,7 +345,7 @@ class CustomSSHServerTransport(transport.SSHServerTransport):
         raw = (data or b"")[: self._raw_max_bytes]
         pr = _printable_ratio(raw)
 
-        log.msg(
+        logger.info(
             {
                 "EVENT": "RAW_IN",
                 "SRC_HOST": getattr(peer, "host", ""),
@@ -386,7 +386,7 @@ class CustomSSHServerTransport(transport.SSHServerTransport):
             peer = self.transport.getPeer()
             us = self.transport.getHost()
 
-            log.msg(
+            logger.info(
                 {
                     "EVENT": "KEXINIT",
                     "SRC_HOST": getattr(peer, "host", ""),
@@ -438,56 +438,8 @@ class LoggingPasswordChecker:
     credentialInterfaces = [credentials.IUsernamePassword]
 
     def requestAvatarId(self, creds):
-        log.msg(f"Login attempt - Username: {creds.username}, Password: {creds.password}")
+        logger.warning(
+            f"Login attempt - Username: {creds.username}, Password: {creds.password}"
+        )
         return defer.fail(error.UnauthorizedLogin())
 
-
-class SQLAlchemyObserver:
-    def __init__(self, db):
-        self.db = db
-
-    def __call__(self, event):
-        session = None
-        try:
-            # Twisted may send non-dicts
-            if not isinstance(event, dict):
-                return
-
-            if "EVENT" not in event:
-                return
-
-            print("✔ DB EVENT:", event)
-
-            self.db.insert_log(event)
-
-        except Exception as e:
-            print("Observer Error:", e)
-
-        finally:
-            if session:
-                session.close()
-
-from twisted.python import log
-
-def main():
-    db = Database()
-
-    sql_observer = SQLAlchemyObserver(db)
-
-
-    from twisted.python import log
-    log.addObserver(sql_observer)
-
-    observer = log.PythonLoggingObserver()
-    observer.start()
-
-    ssh_factory = SimpleSSHFactory("SSH-2.0-OpenSSH_7.4")
-    ssh_realm = SimpleSSHRealm()
-    ssh_portal = portal.Portal(ssh_realm)
-    ssh_portal.registerChecker(LoggingPasswordChecker())
-    ssh_factory.portal = ssh_portal
-
-    endpoint = endpoints.TCP4ServerEndpoint(reactor, 2222, interface="0.0.0.0")
-    endpoint.listen(ssh_factory)
-
-    reactor.run()
