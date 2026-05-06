@@ -7,7 +7,7 @@ import type {
   RegisterPayload,
 } from "../types/auth";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "/api/v1";
+const API_BASE_URL = "/api/v1";
 class APIClient {
   private client: AxiosInstance;
 
@@ -28,16 +28,6 @@ class APIClient {
         return Promise.reject(error);
       },
     );
-
-    this.client.interceptors.request.use((config) => {
-      const token = localStorage.getItem("token");
-
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-
-      return config;
-    });
   }
 
   // Fetch all logs
