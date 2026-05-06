@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from motor.motor_asyncio import AsyncIOMotorDatabase
 
 from backend.app.schemas import EventType, Session, Stats, SSHLog, UserRead
-from backend.app.session import get_current_user, get_db
+from backend.app.session import get_current_user, get_data_db
 from backend.app.services.log_service import (
     get_logs,
     get_session_detail,
@@ -29,25 +29,30 @@ async def api_get_logs(
     event_type: EventType | None = None,
     ip: str | None = None,
     limit: int | None = None,
-    db: AsyncIOMotorDatabase = Depends(get_db),
-    _: dict = Depends(get_current_user),
+    db: AsyncIOMotorDatabase = Depends(get_data_db),
 ) -> list[SSHLog]:
-    return await get_logs(db, event_type=event_type, ip=ip, limit=limit)
+    docs = await get_logs(db, event_type=event_type, ip=ip, limit=limit)
 
+    for doc in docs:
+        doc["_id"] = str(doc["_id"])  # convert ObjectId → str
+
+    return docs
 
 @app_router.get("/sessions", response_model=list[Session])
 async def api_get_sessions(
-    db: AsyncIOMotorDatabase = Depends(get_db),
-    _: dict = Depends(get_current_user),
+    db: AsyncIOMotorDatabase = Depends(get_data_db),
 ) -> list[Session]:
-    return await get_sessions(db)
+    docs =  await get_sessions(db)
+    for doc in docs:
+        doc["_id"] = str(doc["_id"])  # convert ObjectId → str
+
+    return docs
 
 
 @app_router.get("/sessions/{conn_id}", response_model=Session)
 async def api_get_session_detail(
     conn_id: str,
-    db: AsyncIOMotorDatabase = Depends(get_db),
-    _: dict = Depends(get_current_user),
+    db: AsyncIOMotorDatabase = Depends(get_data_db),
 ) -> Session:
     session = await get_session_detail(db, conn_id)
     if not session:
@@ -60,7 +65,6 @@ async def api_get_session_detail(
 
 @app_router.get("/stats", response_model=Stats)
 async def api_get_stats(
-    db: AsyncIOMotorDatabase = Depends(get_db),
-    _: dict = Depends(get_current_user),
+    db: AsyncIOMotorDatabase = Depends(get_data_db),
 ) -> Stats:
     return await get_stats(db)
