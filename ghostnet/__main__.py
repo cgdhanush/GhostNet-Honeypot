@@ -29,24 +29,33 @@ def run(sysargv: list[str] | None = None) -> None:
     try:
         setup_logging_pre()
         setup_logging()
+
         arguments = Arguments(sysargv)
         args = arguments.get_parsed_arg()
-
+        
+        
         # Call subcommand.
-        if args.get("version") or args.get("version_main"):
-            """
-            Print version information for GhostNet and its key dependencies.
-            """
+        if args.get("version"):
             print(f"Operating System:\t{platform.platform()}")
             print(f"Python Version:\t\tPython {sys.version.split(' ')[0]}")
             print()
             print(f"GhostNet Version:\tGhostNet {__version__}")
+            sys.exit(0)
 
-            return_code = 0
-
-        elif "func" in args:
+        if "func" in args:
             logger.info(f"GhostNet {__version__}")
             return_code = args["func"](args)
+        
+        else:
+            # No subcommand was issued.
+            raise Exception(
+                "Usage of GhostNet requires a subcommand to be specified.\n"
+                "To have the bot executing trades in live/dry-run modes, "
+                "depending on the value of the `dry_run` setting in the config, run ghostNet "
+                "as `ghostNet trade [options...]`.\n"
+                "To see the full list of options available, please use "
+                "`ghostNet --help` or `ghostNet <command> --help`."
+            )
         
     except SystemExit as e:  # pragma: no cover
         return_code = e

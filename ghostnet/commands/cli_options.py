@@ -57,5 +57,42 @@ AVAILABLE_CLI_OPTIONS = {
         "redirecting output to a file.",
         action="store_false",
         default=True,
-    )
+    ),
+    "logfile": Arg(
+        "--logfile",
+        help="Path to a file where logs will be written. If not specified, logs will be written to stdout.",
+        default=None,
+    ),
+    "hostname": Arg(
+        "--hostname",
+        help="Hostname or IP address to listen on (default: 0.0.0).",
+        default="0.0.0.0",
+    ),
+    "port": Arg(
+        "--port",
+        help="Port number to listen on (default: 2222).",
+        type=check_int_nonzero,
+        default=2222,
+    ),
+    "ssh_version": Arg(
+        "--version",
+        help="SSH version string to present to clients (default: SSH-2.0-OpenSSH_7.4).",
+        default="SSH-2.0-OpenSSH_7.4",
+    ),
+    "listen_ip_address": Arg(
+        "--ip-address",
+        help="IP address to listen on for the API server (default: 0.0 0.0).",
+        default="0.0.0.0",
+    ),
+    "listen_port": Arg(
+        "--port",
+        help="Port number to listen on for the API server (default: 8000).",
+        type=check_int_nonzero,
+        default=8000,
+    ),
+    "CORS_origins": Arg(
+        "--origins",
+        help="Comma-separated list of allowed CORS origins for the API server (default: empty).",
+        default="",
+    ),
 }

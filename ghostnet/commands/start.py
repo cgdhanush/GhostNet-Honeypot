@@ -8,5 +8,5 @@ def start_main(args: dict[str, Any]) -> None:
     Main entry point for GhostNet 
     """
     from ghostnet.ghostnet import GhostNet
-    ghostnet = GhostNet()
+    ghostnet = GhostNet(args=args)
     ghostnet.start()

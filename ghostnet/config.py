@@ -4,18 +4,21 @@ from dotenv import load_dotenv
 load_dotenv()
 
 CONFIG = {
-    "verbosity": int(os.getenv("VERBOSITY", 0)),
-    "print_colorized": os.getenv("PRINT_COLORIZED", "true").lower() == "true",
-
+    "verbosity": 0,
+    "print_colorized": True,
     "ssh_config": {
-        "hostname": os.getenv("SSH_HOSTNAME", "0.0.0.0"),
-        "port": int(os.getenv("SSH_PORT", 2222)),
-        "version": os.getenv("SSH_VERSION", "SSH-2.0-OpenSSH_7.4"),
+        "hostname": "0.0.0.0",
+        "port": 2222,
+        "version": "SSH-2.0-OpenSSH_7.4",
     },
-    "enable_api_server": os.getenv("ENABLE_API_SERVER", "true").lower() == "true",
     "api_server": {
-        "listen_ip_address": os.getenv("API_SERVER_HOSTNAME", "0.0.0.0"),
-        "listen_port": int(os.getenv("API_SERVER_PORT", 8000)),
-        "CORS_origins": os.getenv("API_SERVER_CORS_ORIGINS", "").split(",") if os.getenv("API_SERVER_CORS_ORIGINS") else [],
+        "listen_ip_address": "0.0.0.0",
+        "listen_port": 8000,
+        "CORS_origins": [],
+    },
+    "mongodb": {
+        "uri": os.getenv("MONGODB_URI", "mongodb://localhost:27017"),
+        "db": os.getenv("MONGODB_DB", "honeyfot"),
+        "event_db": os.getenv("MONGODB_EVENT_DB", "ssh_logs"),
     },
 }

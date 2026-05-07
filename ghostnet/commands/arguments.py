@@ -8,16 +8,15 @@ from typing import Any
 from ghostnet.commands.cli_options import AVAILABLE_CLI_OPTIONS
 
 
-ARGS_MAIN = ["version"]
-
 ARGS_COMMON = [
     "verbosity",
     "print_colorized",
     "version",
+    "logfile",
 ]
 
-ARGS_WEBSERVER: list[str] = []
-ARGS_SSHSERVER: list[str] = []
+ARGS_WEBSERVER: list[str] = ["listen_ip_address", "listen_port", "CORS_origins"]
+ARGS_SSHSERVER: list[str] = ["port", "hostname", "ssh_version"]
 ARGS_START: list[str] = []
 
 
@@ -71,7 +70,6 @@ class Arguments:
         from ghostnet.commands import start_sshserver
         from ghostnet.commands import start_main
 
-        
         subparsers = self.parser.add_subparsers(
             dest="command",
         )
