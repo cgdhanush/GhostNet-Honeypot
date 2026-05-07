@@ -15,14 +15,18 @@ class Settings(BaseSettings):
         "http://localhost:3000",
     ]
 
-    MONGODB_URI: str = "mongodb://admin:admin1234@127.0.0.1:27017/?authSource=admin"
+    MONGODB_URI: str = "mongodb://localhost:27017" 
     MONGODB_DB: str = "honeyfot"
     MONGODB_EVENT_DB: str = "ssh_logs"
 
-    SECRET_KEY: str = "00aabbccddeeff00112233445566778899aabbccd899"
+    SECRET_KEY: str = "supersecretkey"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
     JWT_ALGORITHM: str = "HS256"
 
-
+    def load_from_dict(self, config: dict):
+        for key, value in config.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
+                
 settings = Settings()

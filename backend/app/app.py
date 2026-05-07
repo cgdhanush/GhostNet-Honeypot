@@ -18,9 +18,8 @@ logger = logging.getLogger(__name__)
 def create_app() -> FastAPI:
     app = FastAPI(
         title=settings.APP_NAME,
-        version="1.0.0",
-        docs_url="/docs",
-        redoc_url="/redoc",
+        # docs_url="/docs",
+        # redoc_url="/redoc",
     )
 
     app.include_router(public_router, prefix="/api/v1", tags=["public"])
@@ -47,9 +46,12 @@ def start_app(config: dict, standalone: bool = False):
     """
     Start API ... should be run in thread.
     """
+    # Load settings from config dict
+    settings.load_from_dict(config)
+    
 
-    rest_ip = config.get("api_server", {}).get("listen_ip_address") or "127.0.0.1"
-    rest_port = config.get("api_server", {}).get("listen_port") or 8000
+    rest_ip = config.get("api_server", {}).get("listen_ip_address") 
+    rest_port = config.get("api_server", {}).get("listen_port")
 
     logger.info(f"Starting HTTP Server at http://{rest_ip}:{rest_port}")
 
