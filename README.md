@@ -152,6 +152,28 @@ python -m ghostnet sshserver
 python -m ghostnet start
 ```
 
+## 🧪 Testing the SSH Honeypot
+
+From another terminal or machine:
+
+### Connect via SSH
+
+```bash
+ssh -p 2222 testuser@localhost
+```
+
+Try any username/password combination.
+
+### Generate Failed Login Attempts
+
+```bash
+ssh -p 2222 root@localhost
+ssh -p 2222 admin@localhost
+```
+
+Enter random passwords to simulate attack traffic.
+
+
 ---
 
 ## ❓ Need Help?
