@@ -31,6 +31,7 @@ import {
   Logout as LogoutIcon,
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
+  LocationCity as LocationCityIcon,
 } from "@mui/icons-material";
 
 import { useLocation, useNavigate } from "react-router-dom";
@@ -60,6 +61,7 @@ export function Layout({ children }: LayoutProps) {
         { label: "Dashboard", path: "/", icon: DashboardIcon },
         { label: "Sessions", path: "/sessions", icon: StorageIcon },
         { label: "Raw Logs", path: "/logs", icon: LogsIcon },
+        { label: "IP Location Lookup", path: "/ip-lookup", icon: LocationCityIcon },
       ]
     : [
         { label: "Login", path: "/login", icon: LoginIcon },
