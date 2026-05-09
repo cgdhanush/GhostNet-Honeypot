@@ -7,7 +7,8 @@ import type {
   RegisterPayload,
 } from "../types/auth";
 
-const API_BASE_URL = "/api/v1";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "/api/v1";
+
 class APIClient {
   private client: AxiosInstance;
 
