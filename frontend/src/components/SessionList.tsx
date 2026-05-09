@@ -21,6 +21,7 @@ import {
   NetworkCheck as NetworkIcon,
 } from "@mui/icons-material";
 import type { Session, EventType } from "../types/logs";
+import { useNavigate } from "react-router-dom";
 
 interface SessionListProps {
   sessions: Session[];
@@ -42,6 +43,8 @@ export function SessionList({ sessions, loading }: SessionListProps) {
     setExpandedSession(expandedSession === connId ? null : connId);
   };
 
+  const navigate = useNavigate();
+  
   if (loading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
@@ -85,9 +88,20 @@ export function SessionList({ sessions, loading }: SessionListProps) {
                 </IconButton>
               }
               title={
-                <Typography sx={{ fontWeight: 700, color: "#00d4ff" }}>
-                  {session.SRC_HOST}:{session.SRC_PORT}
-                </Typography>
+                <Box
+                  onClick={() => navigate(`/ip-lookup?ip=${session.SRC_HOST}`)}
+                  sx={{
+                    cursor: "pointer",
+                    display: "inline-block",
+                    "&:hover": {
+                      textDecoration: "underline",
+                    },
+                  }}
+                >
+                  <Typography sx={{ fontWeight: 700, color: "#00d4ff" }}>
+                    {session.SRC_HOST}:{session.SRC_PORT}
+                  </Typography>
+                </Box>
               }
               subheader={
                 <Box

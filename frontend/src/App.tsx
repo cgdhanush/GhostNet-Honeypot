@@ -9,6 +9,7 @@ import { LoginPage } from "./pages/LoginPage";
 import { RegisterPage } from "./pages/RegisterPage";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import { IpLookupPage } from "./pages/IpLookupPage";
 
 function App() {
   return (
@@ -33,6 +34,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <SessionsPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/ip-lookup"
+                element={
+                  <ProtectedRoute>
+                    <IpLookupPage />
                   </ProtectedRoute>
                 }
               />

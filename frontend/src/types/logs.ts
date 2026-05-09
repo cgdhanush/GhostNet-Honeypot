@@ -52,3 +52,17 @@ export interface APIResponse<T> {
   status: number;
   message?: string;
 }
+
+export type IpInfo = {
+  query: string;
+  country: string;
+  regionName: string;
+  city: string;
+  isp: string;
+  org: string;
+  lat: number;
+  lon: number;
+  timezone: string;
+  status?: string; // added (API sometimes returns it)
+  message?: string;
+};
